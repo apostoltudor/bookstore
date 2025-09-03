@@ -1,0 +1,123 @@
+1. Autori (Author)
+
+Mihai Eminescu
+Mare poet român, autorul "Luceafărul".
+1850-01-15
+
+Ion Creangă
+Scriitor și povestitor român, autorul "Amintiri din copilărie".
+1837-03-01
+
+Mircea Eliade
+Scriitor și istoric al religiilor, autorul "Maitreyi".
+1907-03-09
+
+George Călinescu
+Critic literar și scriitor, autorul "Enigma Otiliei".
+1899-06-19
+
+2. Edituri (Publisher)
+
+Humanitas
+București, România
+https://www.humanitas.ro
+
+Polirom
+Iași, România
+https://www.polirom.ro
+
+Litera
+București, România
+https://www.litera.ro
+
+Corint
+București, România
+https://www.corint.ro
+
+3. Categorii (Category)
+
+Ficțiune
+Cărți de ficțiune, romane și nuvele.
+
+Non-Ficțiune
+Cărți de non-ficțiune, biografii și eseuri.
+
+Poezie
+Culegeri de poezii și versuri.
+
+Istorie
+Cărți despre istorie și evenimente istorice.
+
+4. Cărți (Book)
+
+Luceafărul
+Culegere de poezii semnate de Mihai Eminescu.
+29.99
+1883-01-01
+100
+Mihai Eminescu
+Humanitas
+Poezie
+
+Amintiri din copilărie
+Povestiri autobiografice semnate de Ion Creangă.
+25.50
+1881-01-01
+75
+Ion Creangă
+Polirom
+Ficțiune
+
+Maitreyi
+Roman scris de Mircea Eliade.
+35.00
+1933-01-01
+50
+Mircea Eliade
+Litera
+Ficțiune
+
+Enigma Otiliei
+Roman scris de George Călinescu.
+30.00
+1938-01-01
+60
+George Călinescu
+Corint
+Ficțiune
+
+5. Recenzii (Review)
+
+Luceafărul
+O capodoperă a literaturii românești!
+5
+
+Amintiri din copilărie
+O călătorie emoționantă în copilăria lui Ion Creangă.
+4
+
+Maitreyi
+O explorare profundă a iubirii și spiritualității.
+5
+
+Enigma Otiliei
+Un roman captivant despre dragoste și mister.
+4
+
+6. Comenzi (Order)
+
+Luceafărul
+2
+PENDING
+
+Amintiri din copilărie
+1
+SHIPPED
+
+Maitreyi
+3
+PENDING
+
+Enigma Otiliei
+1
+CANCELED

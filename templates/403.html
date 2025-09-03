@@ -1,0 +1,21 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}   
+{% block content %}
+<div class="container mt-4">
+    {% if user.is_authenticated %}
+        <p class="text-success">Salut {{ user.username }}</p>
+    {% else %}
+        <p class="text-success">Salut preastimate anonim</p>
+    {% endif %}
+
+    <h1>{{ titlu|default:"Eroare 403" }}</h1>
+    
+    {% if mesaj_personalizat %}
+        <p class="alert alert-danger">{{ mesaj_personalizat }}</p>
+    {% else %}
+        <p class="alert alert-danger">Accesul la această resursă nu este permis. Vă rugăm să verificați permisiunile dumneavoastră sau să contactați administratorul.</p>
+    {% endif %}
+
+    <a href="{% url 'index' %}" class="btn btn-primary">Înapoi la pagina principală</a>
+</div>
+{% endblock %}

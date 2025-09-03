@@ -1,0 +1,13 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">    
+    <div class="background-image"></div> <!-- Imagine de fundal --> 
+    <div class="alert alert-success" role="alert">
+        <h2>Confirmare reușită!</h2>
+        <p>Felicitări, {{ username }}! E-mailul tău a fost confirmat cu succes. Poți să te loghezi acum.</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Loghează-te</a>
+    </div>
+</div>
+{% endblock %}

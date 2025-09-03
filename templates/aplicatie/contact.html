@@ -1,0 +1,14 @@
+{% extends 'aplicatie/base.html' %} 
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">    
+    <div class="background-image"></div> <!-- Imagine de fundal -->
+    <h1>Contact</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Trimite</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="background-image"></div> <!-- Imagine de fundal -->
+    <h2>Profil Utilizator</h2>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Nume:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>E-mail:</strong> {{ user.email }}</p>
+            <p><strong>Gen literar preferat:</strong> {{ user.favorite_genre }}</p>
+            <p><strong>Data nașterii:</strong> {{ user.birth_date }}</p>
+            <p><strong>Număr de telefon:</strong> {{ user.phone_number }}</p>
+            <p><strong>Adresă:</strong> {{ user.address }}</p>
+            <p><strong>Frecvența lecturii:</strong> {{ user.reading_frequency }}</p>
+            <a href="{% url 'change_password' %}" class="btn btn-primary mt-3"><img src="{% static 'images/user-icon.png' %}" alt="Schimbă parola" class="icon"> Schimbă Parola</a>
+            <a href="{% url 'user_data_with_confirmation' %}" class="btn btn-secondary mt-2">Înapoi</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

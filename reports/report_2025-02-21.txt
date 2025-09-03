@@ -1,0 +1,14 @@
+
+Raport de Activitate - 2025-02-21
+
+1. Număr de utilizatori noi: 1
+2. Acțiuni importante:
+   - Cărți create: 0
+   - Comenzi plasate: 0
+   - Recenzii adăugate: 0
+3. Erori și probleme:
+   - Verificați fișierul de erori: /Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/logs/error.log
+   - Verificați fișierul de erori critice: /Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/logs/critical.log
+
+Generat automat de Bookstore.
+        

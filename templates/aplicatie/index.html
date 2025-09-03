@@ -1,0 +1,12 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="background-image"></div> <!-- Imagine de fundal -->
+    <h1>Bine ați venit la Bookstore!</h1>
+    <p>Descoperă cele mai bune cărți și oferte speciale pe site-ul nostru.</p>
+    <a href="{% url 'book_list' %}" class="btn btn-primary">Vezi Cărți</a>
+    <a href="{% url 'promotii' %}" class="btn btn-secondary mt-2"><img src="{% static 'images/promo-icon.png' %}" alt="Promoții" class="icon"> Promoții</a>
+</div>
+{% endblock %}

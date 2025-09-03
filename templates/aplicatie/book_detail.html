@@ -1,0 +1,25 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="background-image"></div> <!-- Imagine de fundal -->
+    <h1>Detalii Carte: {{ book.title }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Autor:</strong> {{ book.author.name }}</p>
+            <p><strong>Editură:</strong> {{ book.publisher.name }}</p>
+            <p><strong>Preț:</strong> {{ book.price }} lei</p>
+            <p><strong>Data Publicării:</strong> {{ book.publication_date }}</p>
+            <p><strong>Stoc:</strong> {{ book.stock }}</p>
+            <p><strong>Descriere:</strong> {{ book.description|default:"Fără descriere" }}</p>
+            {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="img-fluid" style="max-width: 300px;">
+            {% else %}
+            <img src="{% static 'images/book-icon.png' %}" alt="Iconiță carte" class="img-fluid" style="max-width: 300px;">
+            {% endif %}
+            <a href="{% url 'book_list' %}" class="btn btn-primary mt-3">Înapoi la listă</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmă-ți contul pe Bookstore</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <img src="{% static 'images/logo.png' %}" alt="Bookstore Logo" style="max-width: 200px; display: block; margin: 0 auto 20px;">
+        <h1 style="color: #2c3e50; text-align: center;">Bun venit pe Bookstore, {{ user.first_name }} {{ user.last_name }}!</h1>
+        <p style="color: #666; line-height: 1.6;">
+            Salutăm cu bucurie înregistrarea ta pe site-ul nostru! Iată detaliile tale:
+            <br><strong>Nume:</strong> {{ user.first_name }} {{ user.last_name }}
+            <br><strong>Username:</strong> {{ user.username }}
+        </p>
+        <p style="color: #666; line-height: 1.6;">
+            Pentru a confirma e-mailul și a activa contul tău, te rugăm să faci clic pe link-ul de mai jos:
+        </p>
+        <p style="text-align: center;">
+            <a href="{{ confirmation_link }}" style="display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">Confirmă e-mailul acum</a>
+        </p>
+        <p style="color: #666; line-height: 1.6; margin-top: 20px;">
+            Dacă nu ai creat un cont pe Bookstore, ignoră acest e-mail.
+        </p>
+        <p style="color: #666; text-align: center; font-size: 12px;">
+            Echipa Bookstore | © 2025 Toate drepturile rezervate
+        </p>
+    </div>
+</body>
+</html>

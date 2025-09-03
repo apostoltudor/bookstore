@@ -1,0 +1,46 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="background-image"></div> <!-- Imagine de fundal din styles.css -->
+    <div class="card">
+        <div class="card-body">
+            <h2 class="text-center mb-4"><img src="{% static 'images/user-icon.png' %}" alt="Profil" class="icon me-2"> Datele Mele</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Prenume:</strong> {{ user.first_name }}</p>
+                    <p><strong>Nume:</strong> {{ user.last_name }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Gen literar preferat:</strong> {{ user.favorite_genre }}</p>
+                    <p><strong>Data nașterii:</strong> {{ user.birth_date|date:"d.m.Y" }}</p>
+                    <p><strong>Număr de telefon:</strong> {{ user.phone_number }}</p>
+                    <p><strong>Adresă:</strong> {{ user.address }}</p>
+                    <p><strong>Frecvența lecturii:</strong> {{ user.reading_frequency }}</p>
+                </div>
+            </div>
+
+            {% if not user.email_confirmat and confirmation_link %}
+                <div class="alert alert-warning mt-3" role="alert">
+                    <p>Nu ai confirmat încă e-mailul. Te rugăm să faci clic pe link-ul de mai jos pentru a confirma:</p>
+                    <a href="{{ confirmation_link }}" class="btn btn-primary">Confirmă e-mailul acum</a>
+                </div>
+            {% endif %}
+
+            {% if user.email_confirmat %}
+                <div class="alert alert-success mt-3" role="alert">
+                    E-mailul tău este confirmat cu succes!
+                </div>
+            {% endif %}
+
+            <div class="text-center mt-3">
+                <a href="{% url 'profile' %}" class="btn btn-primary"><img src="{% static 'images/user-icon.png' %}" alt="Profil" class="icon me-2"> Vezi Profil</a>
+                <a href="{% url 'index' %}" class="btn btn-secondary ms-2">Înapoi la pagina principală</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

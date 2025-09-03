@@ -1,0 +1,114 @@
+{% extends 'aplicatie/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="background-image"></div> <!-- Imagine de fundal -->
+    <h1>Filtrare Cărți</h1>
+    <form id="bookFilterForm" method="get" class="mb-4">
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Filtrează</button>
+        <button type="button" id="resetFilters" class="btn btn-secondary">Resetează filtrele</button>
+    </form>
+
+    <div id="booksList" class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Titlu</th>
+                    <th>Autor</th>
+                    <th>Editura</th>
+                    <th>Preț</th>
+                    <th>Data Publicării</th>
+                    <th>Stoc</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td><a href="{% url 'book_detail' pk=book.pk %}">{{ book.title }}</a></td>
+                    <td>{{ book.author.name }}</td>
+                    <td>{{ book.publisher.name }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>{{ book.publication_date }}</td>
+                    <td>{{ book.stock }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">Nu există cărți care să corespundă filtrului.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.getElementById('bookFilterForm').addEventListener('submit', function(event) {
+    event.preventDefault();  // Previne reîncărcarea paginii
+    const formData = new FormData(this);
+    
+    let queryString = new URLSearchParams(formData).toString();
+    let url = '{% url "book_list" %}';
+    if (queryString) {
+        url += '?' + queryString;
+    }
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Răspuns de la server eronat: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.books_html) {
+            const booksList = document.getElementById('booksList');
+            booksList.innerHTML = data.books_html;
+        } else {
+            throw new Error('Răspunsul nu conține books_html');
+        }
+    })
+    .catch(error => {
+        console.error('Eroare detaliată:', error);
+        alert('A apărut o eroare la filtrare. Verificați consola pentru detalii: ' + error.message);
+    });
+});
+
+document.getElementById('resetFilters').addEventListener('click', function() {
+    const form = document.getElementById('bookFilterForm');
+    form.reset();  // Resetează formularul
+    fetch('{% url "book_list" %}', {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Răspuns de la server eronat: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.books_html) {
+            const booksList = document.getElementById('booksList');
+            booksList.innerHTML = data.books_html;  // Actualizează lista de cărți cu toate cărțile
+        } else {
+            throw new Error('Răspunsul nu conține books_html');
+        }
+    })
+    .catch(error => {
+        console.error('Eroare detaliată:', error);
+        alert('A apărut o eroare la resetarea filtrelor. Verificați consola pentru detalii: ' + error.message);
+    });
+});
+</script>
+{% endblock %}

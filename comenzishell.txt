@@ -1,0 +1,69 @@
+python3 manage.py shell
+
+1. unconfirmed_emails
+
+from aplicatie.models import CustomUser
+from django.utils import timezone
+from datetime import timedelta
+
+user = CustomUser.objects.get(username='testuser')
+user.date_joined = timezone.now() - timedelta(minutes=3)  # Mai vechi de 2 minute
+user.save()
+
+from aplicatie.crontab import Command
+
+cmd = Command()
+cmd.clean_unconfirmed_users()
+
+--vezi in logs/info.log sau in admin
+
+2. send newsletter
+
+user1 = CustomUser.objects.get(username='user1')
+user1.date_joined = timezone.now() - timedelta(minutes=3)
+user1.save()
+
+cmd = Command()
+cmd.send_newsletter()
+
+--vezi in logs/info.log
+
+settings.py: EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+from django.core.mail import outbox
+print(outbox)  # Ar trebui să vezi e-mailurile stocate în memorie
+apoi iar dummy.EmailBackend in settings.py
+
+3. clear sessions
+
+from django.contrib.sessions.models import Session
+sessions = Session.objects.all()
+print(sessions)
+
+session = Session.objects.first()
+session.expire_date = timezone.now() - timedelta(minutes=15)
+session.save()
+
+from django.core.management import call_command
+call_command('clearsessions')
+
+sessions = Session.objects.all()
+print(sessions)  # Ar trebui să fie gol
+
+4. activity report
+
+from aplicatie.crontab import Command
+
+cmd = Command()
+cmd.generate_activity_report()
+
+
+
+(alt ex) 5. pt email-ul trimit de confirmare
+
+schimba in settings.py:
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+in loc de dummy.EmailBackend
+
+outbox
+print(outbox)
+

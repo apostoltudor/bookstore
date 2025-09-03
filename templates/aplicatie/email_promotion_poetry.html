@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <img src="{% static 'images/logo.png' %}" alt="Bookstore Logo" style="max-width: 200px; display: block; margin: 0 auto 20px;">
+        <h1 style="color: #2c3e50; text-align: center;">Promoție Specială pentru Poezie!</h1>
+        <p style="color: #666; line-height: 1.6;">
+            Bună, {{ user.first_name }} {{ user.last_name }}!<br>
+            Avem o promoție incredibilă pentru cărțile de poezie! Reducere de {{ promotion.discount_percentage }}% pentru promoția „{{ promotion.name }}”.
+        </p>
+        <p style="color: #666; line-height: 1.6;">
+            Descriere: {{ promotion.description|default:"Descoperă colecția noastră de poezie la prețuri speciale!" }}<br>
+            Data expirării: {{ expiry_date|date:"d.m.Y" }}
+        </p>
+        <p style="color: #666; line-height: 1.6; margin-top: 20px;">
+            Accesează site-ul nostru la <a href="http://127.0.0.1:8000" style="color: #3498db;">Bookstore</a> pentru a profita de ofertă!
+        </p>
+        <p style="color: #666; text-align: center; font-size: 12px;">
+            Echipa Bookstore | © 2025 Toate drepturile rezervate
+        </p>
+    </div>
+</body>
+</html>

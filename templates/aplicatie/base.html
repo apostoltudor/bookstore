@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bookstore{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS personalizat -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Bookstore Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Buton pentru pagina principală (toți utilizatorii) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Acasă</a>
+                    </li>
+                    <!-- Buton pentru lista de cărți (toți utilizatorii) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'book_list' %}">Cărți</a>
+                    </li>
+                    <!-- Buton pentru contact (toți utilizatorii) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <!-- Butoane vizibile doar pentru utilizatorii autentificați -->
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_data_with_confirmation' %}"><img src="{% static 'images/user-icon.png' %}" alt="Profil" class="icon me-1"> Profil</a>
+                        </li>
+                        <!-- Butoane vizibile doar pentru utilizatorii staff -->
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'promotii' %}"><img src="{% static 'images/promo-icon.png' %}" alt="Promoții" class="icon me-1"> Promoții</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'create_book' %}">Adaugă Carte</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Deconectare</a>
+                        </li>
+                    {% else %}
+                        <!-- Butoane vizibile doar pentru utilizatorii neautentificați -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}"><img src="{% static 'images/user-icon.png' %}" alt="Login" class="icon me-1"> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Înregistrare</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 Bookstore. Toate drepturile rezervate.</p>
+    </footer>
+
+    <!-- Bootstrap 5 JS și Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- JavaScript personalizat (opțional) -->
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
