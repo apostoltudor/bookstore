@@ -1,0 +1,63 @@
+.
+├── README.md
+├── __pycache__
+│   └── manage.cpython-311.pyc
+├── aplicatie
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── admin.py
+│   ├── apps.py
+│   ├── crontab.py
+│   ├── forms.py
+│   ├── migrations
+│   ├── models.py
+│   ├── seed_data.txt
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── bookstore
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── comenzishell.txt
+├── covers
+│   ├── amintiridincopilarie.jpg
+│   ├── amintiridincopilarie_MgOu0JR.jpg
+│   ├── amintiridincopilarie_MgOu0JR_zI7rQan.jpg
+│   ├── enigmaotiliei.jpeg
+│   ├── enigmaotiliei_LuzSS1U.jpeg
+│   ├── enigmaotiliei_LuzSS1U_lw49qod.jpeg
+│   ├── luceafarul.jpg
+│   ├── luceafarul_rUIYiaU.jpg
+│   ├── maitreyi.jpg
+│   ├── maitreyi_L62XW7V.jpg
+│   └── maitreyi_L62XW7V_uxrKXpP.jpg
+├── db.sqlite3
+├── diagrama_daw.png
+├── logs
+│   ├── critical.log
+│   ├── debug.log
+│   ├── error.log
+│   ├── info.log
+│   └── warning.log
+├── manage.py
+├── reports
+│   └── report_2025-02-21.txt
+├── requirements.txt
+├── static
+│   ├── css
+│   ├── images
+│   └── js
+├── staticfiles
+│   ├── admin
+│   └── logo.png
+├── structura.txt
+└── templates
+    ├── 403.html
+    ├── admin
+    └── aplicatie
+
+19 directories, 42 files

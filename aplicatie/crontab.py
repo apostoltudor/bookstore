@@ -14,16 +14,16 @@ class Command(BaseCommand):
     help = 'Scheduled tasks for the bookstore application'
 
     def clean_unconfirmed_users(self):
-        """Șterge utilizatorii care sunt înregistrați dar nu au e-mail confirmat, la fiecare 60 de minute."""
-        two_minutes_ago = timezone.now() - timedelta(minutes=2)  # Folosim 2 minute pentru testare (poți ajusta)
+        #sterge utilizatorii care sunt inregistrați dar nu au e-mail confirmat, la fiecare 60 de minute.
+        two_minutes_ago = timezone.now() - timedelta(minutes=2)  # doar 2 minute pentru testare
         unconfirmed_users = CustomUser.objects.filter(email_confirmat=False, date_joined__lte=two_minutes_ago)
         count = unconfirmed_users.count()
         unconfirmed_users.delete()
         logger.info(f"Șterse {count} utilizatori fără e-mail confirmat.")
 
     def send_newsletter(self):
-        """Trimite un newsletter către toți utilizatorii mai vechi de 2 minute, în fiecare joi la 18:00."""
-        two_minutes_ago = timezone.now() - timedelta(minutes=2)  # Folosim 2 minute pentru testare (poți ajusta)
+        #Trimite un newsletter către toți utilizatorii mai vechi de 2 minute, în fiecare joi la 18:00.
+        two_minutes_ago = timezone.now() - timedelta(minutes=2)  # folosim 2 minute pentru testare
         users = CustomUser.objects.filter(date_joined__lte=two_minutes_ago)
         
         messages = []
@@ -42,7 +42,7 @@ class Command(BaseCommand):
             messages.append((
                 newsletter_subject,
                 newsletter_message,
-                'no-reply@bookstore.example.com',  # Adresa fictivă (fără e-mail real)
+                'no-reply@bookstore.example.com',
                 [user.email],
             ))
         
@@ -53,7 +53,7 @@ class Command(BaseCommand):
             logger.warning("Nu există utilizatori eligibili pentru newsletter.")
 
     def generate_activity_report(self):
-        """Generează un raport zilnic cu numărul de utilizatori noi și acțiunile/erorile importante, salvat în fiecare duminică la 23:59."""
+        #Generează un raport zilnic cu numărul de utilizatori noi și acțiunile/erorile importante, salvat în fiecare duminică la 23:59.
         from datetime import date
         
         today = date.today()

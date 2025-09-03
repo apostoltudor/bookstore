@@ -14,7 +14,7 @@ urlpatterns = [
     path('change-password/', views.change_password, name='change_password'),  # Rută pentru schimbarea parolei
     path('promotii/', views.promotii, name='promotii'),  # Rută pentru crearea promoțiilor
     path('user-data-with-confirmation/', views.user_data_with_confirmation, name='user_data_with_confirmation'),  # Noua rută
-    # Pagini detaliu pentru fiecare model
+    # Pagini detaliu pentru fiecare model   #<int:pk> trebuie să fie un număr întreg și că se va trimite în views.py sub numele pk
     path('author/<int:pk>/', views.author_detail, name='author_detail'),
     path('publisher/<int:pk>/', views.publisher_detail, name='publisher_detail'),
     path('category/<int:pk>/', views.category_detail, name='category_detail'),

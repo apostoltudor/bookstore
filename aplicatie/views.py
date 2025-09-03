@@ -8,7 +8,16 @@ from django.core.files.storage import default_storage
 from datetime import datetime, timedelta
 import json
 from datetime import date
+from django.conf import settings
+import os, json
+from datetime import datetime
 import os
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.contrib import messages
+import logging
+from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
@@ -17,8 +26,13 @@ import uuid
 from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django import forms
+from django.views.generic import ListView
+
 
 logger = logging.getLogger('django')
 
@@ -40,68 +54,81 @@ def index(request):
 
 def book_list(request):
     logger.info("Accesare lista de cărți - INFO 1: Utilizatorul a accesat lista de cărți.")
-    
-    # Mesaje de tip INFO (2 locații relevante, conform cerinței anterioare)
     messages.info(request, "INFO: Filtrele sunt disponibile pentru a restrânge rezultatele listei de cărți.")
-    #Filtrele pentru modelul Book din forms.py
-    form = BookFilterForm(request.GET or None)
-    books = Book.objects.all()
 
+    # 1) Form + queryset de bază
+    form = BookFilterForm(request.GET or None)
+    qs = Book.objects.all()
+
+    # 2) Aplic filtru doar dacă e valid și câmpurile sunt completate
     if form.is_valid():
-        #Aplică filtrele doar dacă câmpurile sunt completate în formular cu if cleaned_data
-        cleaned_data = form.cleaned_data
-        if cleaned_data['title']:
-            books = books.filter(title__icontains=cleaned_data['title'])
-        if cleaned_data['author']:
-            books = books.filter(author=cleaned_data['author'])
-        if cleaned_data['publisher']:
-            books = books.filter(publisher=cleaned_data['publisher'])
-        if cleaned_data['category']:
-            books = books.filter(categories=cleaned_data['category'])
-        if cleaned_data['min_price']:
-            books = books.filter(price__gte=cleaned_data['min_price'])
-        if cleaned_data['max_price']:
-            books = books.filter(price__lte=cleaned_data['max_price'])
-        if cleaned_data['publication_date']:
-            books = books.filter(publication_date=cleaned_data['publication_date'])
-        if cleaned_data['stock'] is not None:  # Verificăm explicit dacă stock există
-            books = books.filter(stock=cleaned_data['stock'])
+        cd = form.cleaned_data
+        if cd.get('title'):
+            qs = qs.filter(title__icontains=cd['title'])
+        if cd.get('author'):
+            qs = qs.filter(author=cd['author'])
+        if cd.get('publisher'):
+            qs = qs.filter(publisher=cd['publisher'])
+        if cd.get('category'):
+            qs = qs.filter(categories=cd['category'])
+        if cd.get('min_price') is not None:
+            qs = qs.filter(price__gte=cd['min_price'])
+        if cd.get('max_price') is not None:
+            qs = qs.filter(price__lte=cd['max_price'])
+        if cd.get('publication_date'):
+            qs = qs.filter(publication_date=cd['publication_date'])
+        if cd.get('stock') is not None:
+            qs = qs.filter(stock=cd['stock'])
     else:
         logger.warning("Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.")
-        
-        # Mesaje de tip WARNING (2 locații relevante, conform cerinței anterioare)
         messages.warning(request, "WARNING: Ați trimis formularul de contact de prea multe ori. Vă rugăm să așteptați sau să contactați suportul.")
-    
-    # Verifică dacă cererea este AJAX
+
+    # 3) Paginare (după filtrare)
+    paginator = Paginator(qs, 10)  # 10 carti pe pagina
+    page_number = request.GET.get('page')   #ia nr paginii cerute
+    page_obj = paginator.get_page(page_number)   #returneaza obiectul cu elementele din pagina
+
+    # 4) AJAX: returnez doar partial-ul ca HTML în JSON
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        logger.debug("Cerere AJAX primită pentru filtrarea cărților.")
-        # Randează doar lista de cărți ca HTML și returnează ca JSON
-        books_html = render(request, 'aplicatie/book_list_partial.html', {'books': books}).content.decode('utf-8')
+        logger.debug("Cerere AJAX primită pentru listarea/filtrarea cărților (cu paginare).")
+        books_html = render_to_string(
+            'aplicatie/book_list_partial.html',
+            {'page_obj': page_obj},
+            request=request
+        )
         return JsonResponse({'books_html': books_html}, status=200)
-    
-    # Pentru cererile normale (non-AJAX), returnează pagina completă
-    return render(request, 'aplicatie/book_list.html', {'form': form, 'books': books})
+
+    # 5) Răspuns normal: pagina completă
+    return render(
+        request,
+        'aplicatie/book_list.html',
+        {
+            'form': form,
+            'page_obj': page_obj,
+            'books': page_obj.object_list,  # alias, ca să nu mai dea "Unresolved reference 'books'"
+        }
+    )
+
 
 def contact(request):
-    logger.error("Procesare formular contact - ERROR 1: Eroare potențială la validarea datelor.")
+    logger.info("Accesare/Procesare formular contact")
+
     try:
         if request.method == 'POST':
             form = ContactForm(request.POST)
             if form.is_valid():
-                # Preprocesare date
-                data_nasterii = form.cleaned_data['data_nasterii']
+                # --- Preprocesare vârstă ---
+                dob = form.cleaned_data['data_nasterii']
                 today = datetime.today()
-                age = today.year - data_nasterii.year - ((today.month, today.day) < (data_nasterii.month, data_nasterii.day))
-                months = today.month - data_nasterii.month
-                if months < 0:
-                    months += 12
+                age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+                months = (today.month - dob.month) % 12
                 varsta = f"{age} ani și {months} luni"
 
-                # Preprocesare mesaj
-                mesaj = form.cleaned_data['mesaj']
-                mesaj = ' '.join(mesaj.split())  # Înlocuiește linii noi și spații multiple
+                # --- Mesaj curățat ---
+                mesaj = ' '.join(form.cleaned_data['mesaj'].split())
+                #textul in campul mesaj deja validat cu cleaned_data, split imparte sirul si join uneste cu spatii
 
-                # Salvare date în fișier JSON
+                # --- Payload JSON ---
                 data = {
                     'nume': form.cleaned_data['nume'],
                     'prenume': form.cleaned_data['prenume'],
@@ -113,40 +140,39 @@ def contact(request):
                     'mesaj': mesaj,
                 }
 
-                # Creează folderul "mesaje" dacă nu există
-                
-                if request.session['contact_attempts'] > 3:  # Presupunem că 3 trimiteri consecutive sunt „prea multe”
-                    # Mesaje de tip WARNING (2 locații relevante, conform cerinței anterioare)
-                    messages.warning(request, "WARNING: Ați trimis formularul de contact de prea multe ori. Vă rugăm să așteptați sau să contactați suportul.")
-                
-                # Salvare fișierul JSON
-                timestamp = int(datetime.timestamp(datetime.now()))
-                filename = f'mesaje/mesaj_{timestamp}.json'
-                with open(filename, 'w') as f:
-                    json.dump(data, f, indent=4)
+                # --- Throttling simplu pe sesiune ---
+                attempts = request.session.setdefault('contact_attempts', 0)
+                request.session['contact_attempts'] = attempts + 1
+                if request.session['contact_attempts'] > 3:
+                    messages.warning(request,
+                                     "WARNING: Ați trimis formularul de prea multe ori. Vă rugăm să așteptați.")
+                #mesaj!!!!
+                # --- Salvare JSON în <BASE_DIR>/mesaje/ ---
+                dir_path = os.path.join(settings.BASE_DIR, 'mesaje')
+                os.makedirs(dir_path, exist_ok=True)
+                filename = os.path.join(dir_path, f'mesaj_{int(datetime.timestamp(datetime.now()))}.json')
 
-                logger.critical("Procesare formular contact - CRITICAL 1: Eșec la scrierea în fișierul JSON.")
-                
-                # Mesaje de tip SUCCESS (2 locații relevante, conform cerinței anterioare)
-                messages.success(request, "SUCCESS: Formularul de contact a fost trimis cu succes!")
-                
-                return redirect('success')  # Redirecționează către o pagină de succes
+                with open(filename, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=4, ensure_ascii=False)
+
+                logger.info("Mesaj salvat cu succes în %s", filename)
+                messages.success(request, "SUCCESS: Formularul a fost trimis cu succes!")
+                return redirect('success')
             else:
-                logger.critical("Procesare formular contact - CRITICAL 2: Formular invalid, date incorecte.")
-                
-                # Mesaje de tip ERROR (2 locații relevante, conform cerinței anterioare)
-                messages.error(request, "ERROR: Formularul de contact conține erori. Vă rugăm să verificați câmpurile.")
+                logger.error("Formular invalid la contact")
+                messages.error(request, "ERROR: Formularul conține erori. Verificați câmpurile.")
+        else:
+            form = ContactForm()
     except Exception as e:
-        logger.error("Procesare formular contact - ERROR 2: Eroare neașteptată: {e}".format(e=e))
+        logger.exception("Eroare neașteptată la contact: %s", e)
+        messages.error(request, "A apărut o eroare neașteptată.")
 
-    form = ContactForm()  # Inițializează form pentru GET
     return render(request, 'aplicatie/contact.html', {'form': form})
-
 def success(request):
     # Mesaje de tip INFO (2 locații relevante, conform cerinței anterioare)
     messages.info(request, "INFO: Ați fost redirecționat către pagina de succes după trimiterea mesajului.")
     
-    return render(request, 'aplicatie/success.html')
+    return render(request, 'aplicatie/succes.html')
 
 @require_staff_login
 @login_required
@@ -361,7 +387,7 @@ def user_detail(request, pk):
     return render(request, 'aplicatie/user_detail.html', {'user': user})
 
 def confirm_email(request, cod):
-    """View pentru confirmarea e-mailului prin link-ul de confirmare."""
+    #View pentru confirmarea e-mailului prin link-ul de confirmare.
     try:
         user = CustomUser.objects.get(cod=cod)
         user.email_confirmat = True

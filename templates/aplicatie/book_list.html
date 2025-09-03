@@ -3,112 +3,91 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="background-image"></div> <!-- Imagine de fundal -->
-    <h1>Filtrare Cărți</h1>
-    <form id="bookFilterForm" method="get" class="mb-4">
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Filtrează</button>
-        <button type="button" id="resetFilters" class="btn btn-secondary">Resetează filtrele</button>
-    </form>
+  <div class="background-image"></div>
+  <h1>Filtrare Cărți</h1>
 
-    <div id="booksList" class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Titlu</th>
-                    <th>Autor</th>
-                    <th>Editura</th>
-                    <th>Preț</th>
-                    <th>Data Publicării</th>
-                    <th>Stoc</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for book in books %}
-                <tr>
-                    <td><a href="{% url 'book_detail' pk=book.pk %}">{{ book.title }}</a></td>
-                    <td>{{ book.author.name }}</td>
-                    <td>{{ book.publisher.name }}</td>
-                    <td>{{ book.price }}</td>
-                    <td>{{ book.publication_date }}</td>
-                    <td>{{ book.stock }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6">Nu există cărți care să corespundă filtrului.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <!-- Formularul de filtrare (GET) -->
+  <form id="bookFilterForm" method="get" class="mb-4">
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Filtrează</button>
+    <button type="button" id="resetFilters" class="btn btn-secondary">Resetează filtrele</button>
+  </form>
+
+  <!-- Zona care se reîncarcă prin AJAX (partial) -->
+  <div id="booksList">
+    {% include 'aplicatie/book_list_partial.html' %}
+  </div>
 </div>
 
 <script>
-document.getElementById('bookFilterForm').addEventListener('submit', function(event) {
-    event.preventDefault();  // Previne reîncărcarea paginii
-    const formData = new FormData(this);
-    
-    let queryString = new URLSearchParams(formData).toString();
-    let url = '{% url "book_list" %}';
-    if (queryString) {
-        url += '?' + queryString;
-    }
-    
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Răspuns de la server eronat: ${response.status} - ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.books_html) {
-            const booksList = document.getElementById('booksList');
-            booksList.innerHTML = data.books_html;
-        } else {
-            throw new Error('Răspunsul nu conține books_html');
-        }
-    })
-    .catch(error => {
-        console.error('Eroare detaliată:', error);
-        alert('A apărut o eroare la filtrare. Verificați consola pentru detalii: ' + error.message);
-    });
-});
+(function() {
+  const form = document.getElementById('bookFilterForm');
+  const booksList = document.getElementById('booksList');
+  const listUrl = "{% url 'book_list' %}";
 
-document.getElementById('resetFilters').addEventListener('click', function() {
-    const form = document.getElementById('bookFilterForm');
-    form.reset();  // Resetează formularul
-    fetch('{% url "book_list" %}', {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        }
+  // Helper: face GET AJAX și înlocuiește partial-ul
+  function fetchAndReplace(queryParams) {
+    let url = listUrl;
+    if (queryParams && queryParams.toString()) {
+      url += "?" + queryParams.toString();
+    }
+    return fetch(url, {
+      method: "GET",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json"
+      }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Răspuns de la server eronat: ${response.status} - ${response.statusText}`);
-        }
-        return response.json();
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status} - ${r.statusText}`);
+      return r.json();
     })
     .then(data => {
-        if (data.books_html) {
-            const booksList = document.getElementById('booksList');
-            booksList.innerHTML = data.books_html;  // Actualizează lista de cărți cu toate cărțile
-        } else {
-            throw new Error('Răspunsul nu conține books_html');
-        }
-    })
-    .catch(error => {
-        console.error('Eroare detaliată:', error);
-        alert('A apărut o eroare la resetarea filtrelor. Verificați consola pentru detalii: ' + error.message);
+      if (!data.books_html) throw new Error("Răspunsul nu conține books_html");
+      booksList.innerHTML = data.books_html;
     });
-});
+  }
+
+  // 1) Submit filtrare (AJAX)
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    // când filtrezi, revii pe pagina 1
+    params.delete("page");
+    fetchAndReplace(params).catch(err => {
+      console.error(err);
+      alert("Eroare la filtrare: " + err.message);
+    });
+  });
+
+  // 2) Reset filtre (AJAX)
+  document.getElementById("resetFilters").addEventListener("click", function() {
+    form.reset();
+    fetchAndReplace(new URLSearchParams()).catch(err => {
+      console.error(err);
+      alert("Eroare la resetare: " + err.message);
+    });
+  });
+
+  // 3) Paginare (delegare de eveniment în interiorul #booksList, ca să meargă și după refresh)
+  document.addEventListener("click", function(e) {
+    const a = e.target.closest("#booksList .pagination a.page-link");
+    if (!a) return;
+    e.preventDefault();
+
+    // construim query din filtrele curente + page din link
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    const linkUrl = new URL(a.href, window.location.origin);
+    const nextPage = linkUrl.searchParams.get("page");
+    if (nextPage) params.set("page", nextPage);
+
+    fetchAndReplace(params).catch(err => {
+      console.error(err);
+      alert("Eroare la paginație: " + err.message);
+    });
+  });
+})();
 </script>
 {% endblock %}

@@ -157,8 +157,6 @@ class BookAdmin(admin.ModelAdmin):
     fields = ['title', 'author', 'publisher', 'categories', 'description', 'price', 'publication_date', 'cover_image', 'stock']
     verbose_name = 'Carte'  # Titlu singular
     verbose_name_plural = 'Cărți'  # Titlu plural
-    #qset colectie de obiecte din model.obj
-    list_per_page = 10  #Afișează doar 10 cărți pe pagină
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
@@ -213,5 +211,3 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser)  
 admin.site.register(Promotii)
 admin.site.register(Vizualizari)
-
-

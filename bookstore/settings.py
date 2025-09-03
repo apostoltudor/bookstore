@@ -118,6 +118,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
+            #info, 2025-09-03, 18:59:59, views, Mesaj mesaj
             'format': '{levelname} {asctime} {module} {message}',
             'style': '{',
             'datefmt': '%Y-%m-%d %H:%M:%S'
@@ -189,13 +190,13 @@ HANDLER403 = 'aplicatie.views.custom_permission_denied'
 # Configurare pentru pagina de login implicită
 LOGIN_URL = '/login/'  # Specifică ruta ta personalizată pentru login
 
-# Configurație pentru django-crontab (păstrată pentru task-urile anterioare)
+# Configurație pentru django-crontab
 CRONJOBS = [
     ('*/60 * * * *', 'aplicatie.crontab.clean_unconfirmed_users'),  # La fiecare 60 de minute
     ('0 18 * * 4', 'aplicatie.crontab.send_newsletter'),  # Joi la 18:00
     ('*/10 * * * *', 'django.core.management.call_command', ['clearsessions']),  # La fiecare 10 minute
     ('59 23 * * 0', 'aplicatie.crontab.generate_activity_report'),  # Duminică la 23:59
-]
+]    #minute | ore | ziua lunii | luna | ziua săptămânii
 
 # Director pentru fișierele de raport
 REPORTS_DIR = BASE_DIR / 'reports'

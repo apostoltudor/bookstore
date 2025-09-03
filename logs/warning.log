@@ -1254,3 +1254,50 @@ WARNING 2025-02-22 12:33:52 views Accesare lista de cărți - WARNING 1: Formula
 WARNING 2025-02-22 12:46:03 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.
 WARNING 2025-09-03 00:46:23 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.
 WARNING 2025-09-03 00:46:53 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.
+WARNING 2025-09-03 04:04:35 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.
+WARNING 2025-09-03 04:05:07 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:11 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.
+WARNING 2025-09-03 04:05:14 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:16 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:22 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:29 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:34 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:40 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 04:05:44 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+ERROR 2025-09-03 08:48:40 views Procesare formular contact - ERROR 1: Eroare potențială la validarea datelor.
+WARNING 2025-09-03 08:48:40 basehttp "GET /static/css/contact.css HTTP/1.1" 404 1859
+ERROR 2025-09-03 08:49:21 views Procesare formular contact - ERROR 1: Eroare potențială la validarea datelor.
+CRITICAL 2025-09-03 08:49:21 views Procesare formular contact - CRITICAL 2: Formular invalid, date incorecte.
+ERROR 2025-09-03 08:50:07 views Procesare formular contact - ERROR 1: Eroare potențială la validarea datelor.
+CRITICAL 2025-09-03 08:50:07 views Procesare formular contact - CRITICAL 2: Formular invalid, date incorecte.
+ERROR 2025-09-03 08:55:27 views Procesare formular contact - ERROR 1: Eroare potențială la validarea datelor.
+CRITICAL 2025-09-03 08:55:27 views Procesare formular contact - CRITICAL 2: Formular invalid, date incorecte.
+ERROR 2025-09-03 08:59:01 views Procesare formular contact - ERROR 1: Eroare potențială la validarea datelor.
+CRITICAL 2025-09-03 08:59:01 views Procesare formular contact - CRITICAL 2: Formular invalid, date incorecte.
+ERROR 2025-09-03 09:01:22 views Formular invalid la contact
+ERROR 2025-09-03 09:01:34 views Formular invalid la contact
+ERROR 2025-09-03 09:01:43 views Formular invalid la contact
+ERROR 2025-09-03 09:01:50 log Internal Server Error: /success/
+Traceback (most recent call last):
+  File "/Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/.venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/.venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/aplicatie/views.py", line 174, in success
+    return render(request, 'aplicatie/success.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/.venv/lib/python3.11/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/.venv/lib/python3.11/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tudorapostol/Documents/Facultate/Y2S1/DAW/proiect/bookstore/.venv/lib/python3.11/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: aplicatie/success.html
+ERROR 2025-09-03 09:01:50 basehttp "GET /success/ HTTP/1.1" 500 81214
+WARNING 2025-09-03 12:02:19 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.
+WARNING 2025-09-03 12:47:37 views Autentificare - WARNING 1: Tentativă de login cu date invalide.
+WARNING 2025-09-03 12:47:44 views Accesare lista de cărți - WARNING 1: Formularul de filtrare nu este valid.

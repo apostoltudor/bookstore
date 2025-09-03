@@ -50,9 +50,12 @@ class BookFilterForm(forms.Form):
         required=False,
         min_value=0
     )
-    
+    #Cum funcționează:
+    # După ce fiecare câmp a fost validat individual, Django apelează clean().
+    # În clean(), ai acces la toate datele deja validate în self.cleaned_data.
+    # Poți face verificări între câmpuri și ridica erori dacă ceva nu e corect.
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super().clean()   #folosită pentru validări care implică mai multe câmpuri în același timp.
         min_price = cleaned_data.get('min_price')
         max_price = cleaned_data.get('max_price')
         
@@ -60,7 +63,7 @@ class BookFilterForm(forms.Form):
             raise ValidationError("Prețul minim nu poate fi mai mare decât prețul maxim.")
         
         return cleaned_data
-    
+#regex, sablon de cautare expresii reg
 class ContactForm(forms.Form):
     # Câmpuri
     nume = forms.CharField(
@@ -142,13 +145,13 @@ class ContactForm(forms.Form):
     def clean_mesaj(self):
         mesaj = self.cleaned_data['mesaj']
 
-        # Verifică numărul de cuvinte
-        words = re.findall(r'\b\w+\b', mesaj)
-        if len(words) < 5 or len(words) > 100:
+        # Verifică numărul de cuvinte cu regex #cu modulul de expresii regulate cautam cuv regulate
+        words = re.findall(r'\b\w+\b', mesaj) #de forma \b limita de cuv si \w+ unu sau mai multe caractere
+        if len(words) < 5 or len(words) > 100: #adica cautam cuvinte intregi
             raise ValidationError("Mesajul trebuie să conțină între 5 și 100 de cuvinte.")
 
-        # Verifică dacă mesajul conține link-uri
-        if re.search(r'https?://\S+', mesaj):
+        # Verifică dacă mesajul conține link-uri si cauta prima potrivire care incepe cu
+        if re.search(r'https?://\S+', mesaj): #http(eventual si s) si mai are caractere dupa (\S+)
             raise ValidationError("Mesajul nu poate conține link-uri.")
 
         # Verifică semnătura (ultimul cuvânt trebuie să fie numele)
@@ -160,7 +163,7 @@ class ContactForm(forms.Form):
 
     # Validare comună pentru nume, prenume și subiect
     def validate_text(self, text, field_name):
-        if not re.match(r'^[A-Z][a-zA-Z ]*$', text):
+        if not re.match(r'^[A-Z][a-zA-Z ]*$', text): #* 0 sau mai multe
             raise ValidationError(f"{field_name} trebuie să înceapă cu literă mare și să conțină doar litere și spații.")
 
     def clean_nume(self):
@@ -277,6 +280,7 @@ class UserRegistrationForm(UserCreationForm):
     def clean_phone_number(self):
         phone_number = self.cleaned_data['phone_number']
         if not re.match(r'^\+?\d{10,15}$', phone_number):
+        #daca nu se potriveste: :^ incep sir, + optional, intre 10/15 cifre
             raise ValidationError('Numărul de telefon trebuie să fie format din 10-15 cifre, eventual cu prefix (+).')
         return phone_number
 

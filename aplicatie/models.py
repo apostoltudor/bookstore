@@ -11,6 +11,7 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
+
     class Meta:
         verbose_name = "Autor"
         verbose_name_plural = "Autori"
@@ -149,8 +150,8 @@ class Vizualizari(models.Model):
             # Șterge cea mai veche vizualizare
             oldest_visualization = user_visualizations.first()
             oldest_visualization.delete()
-        super().save(*args, **kwargs)
-
+        super().save(*args, **kwargs)  #obj.save(false), false intra in args
+#super, metoda de la parinte care nu e override
 
 # Model pentru Promoții
 class Promotii(models.Model):
